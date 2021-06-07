@@ -36,8 +36,7 @@ session_start();
 		
 		//busca os dados do cliente, estado e cidade em suas tabelas
 		
-		/*$sql = "SELECT * FROM tb_cidades c, tb_estados e, tb_cliente cli WHERE c.estado = e.id AND  cli.id_cidade = c.id AND cli.login = '$txt_login' AND cli.senha = '$txt_senha'";*/
-		$sql = "SELECT * FROM tb_cliente WHERE senha = '$txt_senha'";
+		$sql = "SELECT * FROM tb_cidades c, tb_estados e, tb_cliente cli WHERE c.estado = e.id AND  cli.id_cidade = c.id AND cli.login = '$txt_login' AND cli.senha = '$txt_senha'";
 		$resultado = mysql_query($sql);
 		$linha = mysql_fetch_array($resultado);
 		
@@ -59,7 +58,7 @@ session_start();
 	
 			$_SESSION[cliente] = $cliente;
 				print "<script> alert('Bem Vindo ".$cliente[NOME]."')</script>";
-				print "<script type = 'text/javascript'> location.href ='index.php?pagina=index.php' </script>";
+				print "<script type = 'text/javascript'> location.href ='index.php?pagina=baladas_lista' </script>";
 		}else{print "<script> alert('Seu login foi desativado pelo administrador')</script>";
 				echo '<script>history.back()</script>';
 				}} else{

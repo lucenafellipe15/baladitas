@@ -33,7 +33,37 @@ $pagina = sqlinj($_REQUEST['pagina']);
 <link href="css/pirobox/pirobox.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-ui-1.8.2.custom.min.js"></script>
 <script type="text/javascript" src="js/pirobox_extended.js"></script>
-
+<!-- contado de visitas -->
+<?php
+$seleciona_visitas = mysql_query("SELECT visitas FROM contador") or die(mysql_error());
+while($res_visitas=mysql_fetch_array($seleciona_visitas)){
+ 
+	 $visitas = $res_visitas[0];
+	 $visitas_mais = $visitas +1;
+	 
+	 session_start();
+	 $sessao = session_id();
+	 $tempo_on = time();
+	 $tempo_fim = time() - 300;
+	 $ip = $_SERVER['REMOTE_ADDR'];
+	$ip = sprintf('%u',ip2long($_SERVER['REMOTE_ADDR']));
+	 
+	 $termina_sessao = mysql_query("DELETE FROM usuarios_online WHERE tempo < '$tempo_fim'")
+	 or die(mysql_error());
+	 
+	 $pega_sessao = mysql_query("SELECT sessao, tempo, ip FROM usuarios_online WHERE sessao = '$sessao'")
+	 or die(mysql_error());
+	 $contar_sessao = mysql_num_rows($pega_sessao);
+	 
+	 if($contar_sessao <= '0'){
+		$nova_sessao = mysql_query("INSERT INTO usuarios_online (sessao, tempo, ip) VALUES ('$sessao','$tempo_on','$ip')")or die(mysql_error());
+		$contar = mysql_query("UPDATE contador SET visitas = '$visitas_mais'")or die(mysql_error());
+	 }else{ 
+		$atualiza_sessao = mysql_query("UPDATE usuarios_online SET tempo = $tempo_on WHERE sessao = '$sesao'")or die(mysql_error());
+	 }
+ 
+}
+?>
 
 </head>
 <body>
@@ -67,7 +97,7 @@ $pagina = sqlinj($_REQUEST['pagina']);
                     <div id="cadastro" class="cadastro">
                         <div class="link_cadastro">
                         <a href="index.php?pagina=form_login"><img src="images/login.png" width="67" height="33" border="none"/></a>
-                        <a href="index.php?pagina=form_cadastro_user1"><img src="images/cadastrar.png" width="99" height="31" border="none"/></a>
+                        <a href="index.php?pagina=form_cadastro_user1&acao=cadastrar"><img src="images/cadastrar.png" width="99" height="31" border="none"/></a>
                         </div>
                     </div>
                     <?php if(isset($_SESSION[cliente][NOME])){?></br></br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ol&aacute; <span class="imagem_centro_festa"><a href="index.php?pagina=artisticos_detalhes&id_artistico=<?php echo $dados_cliente['id_cliente']?> class="highslide red" onClick="return hs.expand(this)""><img src="cliente/t/<?=$dados_cliente['imagem']?>" width="90" height="70" name="festa" id="festa" border="none" title="<?php echo $dados_cliente['login']?>"/></a><a href="cliente/<?php echo $dados_cliente['imagem'];?>" class="highslide red" onClick="return hs.expand(this)" title="<?php echo $dados_cliente['cliente']?>"><small>Clique para ampliar</small></a></span><?php echo $_SESSION[cliente][NOME];?>&nbsp;&nbsp;<a href="index.php?pagina=logout&kill=sair" title="Sair" class="black"><img src="images/icon-deletar.png" border="0"  height="20" width="20" /></a><?php }?>
@@ -86,11 +116,11 @@ $pagina = sqlinj($_REQUEST['pagina']);
                         </div>-->
                     </div>
                     <div class="cleaner"></div>
-                    <div class="lado_direito_banner">
+                    <!--<div class="lado_direito_banner">
                     <iframe style="margin-left:-18px; margin-top:-53px;" width="785" height="390" frameborder="0" scrolling="no" src="piecemaker/index.html" allowtransparency="true" ></iframe>
                     
       
-                    </div>
+                    </div>-->
                     
                     
                 </div>
@@ -176,6 +206,7 @@ box-shadow: #666 0px 2px 3px; margin-bottom:60px;">
                 <li><a href="index.php?pagina=esportes_lista" class="blue" title="Esporte">Esporte</a></li>
                 <li><a href="index.php?pagina=musas_lista" class="blue" title="Musa">Musa</a></li>
                 <li><a href="index.php?pagina=casas_lista" class="blue" title="Casa">Casa</a></li>
+                <li><a href="index.php?pagina=sites_lista" class="blue" title="Site">Site</a></li>
                 <li><a href="index.php?pagina=cinemas_lista" class="blue" title="Cinema">Cinema</a></li>
                 <li><a href="index.php?pagina=estadios_lista" class="blue" title="Estadio">Estadio</a></li>
                 <li><a href="index.php?pagina=shows_lista" class="blue" title="Show">Show</a></li>
@@ -185,6 +216,7 @@ box-shadow: #666 0px 2px 3px; margin-bottom:60px;">
                 <li><a href="index.php?pagina=receitas_lista" class="blue" title="Receitas">Receitas</a></li>
                 <li><a href="index.php?pagina=medicos_lista" class="blue" title="Médicos">Médicos</a></li>
                 <li><a href="index.php?pagina=policias_lista" class="blue" title="Policias">Policias</a></li>
+                <li><a href="index.php?pagina=cliente_lista" class="blue" title="Clientes">Clientes</a></li>
                 <li><a href="index.php?pagina=passagens_lista" class="blue" title="Música">Passagens</a></li>
                 <li><a href="index.php?pagina=graficas_lista" class="blue" title="Gráfica">Grafica</a></li>
                 <li><a href="index.php?pagina=cadastro_artistico" class="blue" title="Cadastro Artisticos">Cadastro Artisticos</a></li>
@@ -286,16 +318,16 @@ box-shadow: #666 0px 2px 3px; margin-bottom:60px;">
         ?>
         <!-- MEIO -->
 		<?php 
-		/*
+		
         if (!isset($_REQUEST['pagina'])){
             include('home.php');
         }else{
         	include($_REQUEST['pagina'].".php");
-        }*/
+        }
         ?>
         <!-- FIM MEIO -->
         <!-- Meio -->
-        <?php require('meio.php'); ?>
+        <?php //require('meio.php'); ?>
         <!--  topo lateral_esquerda -->
         <?php require('lateral_esquerda.php'); ?>
      <!-- Conteudo Principal-->

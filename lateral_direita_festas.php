@@ -25,12 +25,19 @@
                 <?php
 			 		$sqlC = mysql_query("select * from tb_categoria order by categoria");
 			   		while($resultC = mysql_fetch_array($sqlC)){ 
-			   		$idC = $resultC['id_categoria'];
+					$idC = $resultC['id_categoria'];
+					$data_hoje = date('Y/m/d');
+					$sqlB = mysql_query("SELECT count(*) as total FROM tb_festa WHERE id_categoria = ".$dado['id_categoria']." and data >= '$data_hoje' or id_categoria = ".$dado['id_categoria']." and datafim >= '$data_hoje'");
+				$linhasQC = mysql_fetch_array($sqlB);
+				$qtd = $linhasQC['total'];
+					
+					
+			   		
 			   	?>
 				<li><a href="index.php?pagina=baladas_lista&id_c=<?php echo $idC; ?>">
 					<img src="menu_dropdown/images/icons/grey/settings_2.png">
                     
-					<span><?php echo $resultC['categoria']; ?></span>
+					<span><?php echo $resultC['categoria']; ?></span><?php if($qtd != '0'){?> (<?php echo $qtd;?>)<?php }?>
 					<span class="icon">&nbsp;</span>
 					</a>
 					<ul>
@@ -39,8 +46,13 @@
 			   		while($resultsub = mysql_fetch_array($sqlsub)){ 
 			   		$idsub = $resultsub['id_subcategoria'];
 			   		?>
+                     <?php 
+					$sql_qtd_sub_eventos = mysql_query("SELECT count(*) as total FROM tb_festa WHERE id_categoria = ".$dado['id_categoria']." and id_subcategoria = ".$dadoS['id_subcategoria']." and data >= '$data_hoje' or id_categoria = ".$dado['id_categoria']." and id_subcategoria = ".$dadoS['id_subcategoria']." and datafim >= '$data_hoje'");
+					$linhasQC_festa = mysql_fetch_array($sql_qtd_sub_eventos);
+					$qtd_sub_eventos = $linhasQC_festa['total'];
+					?>
 						<li><a href="index.php?pagina=baladas_lista&id_c=<?php echo $idC; ?>&id_s=<?php echo $idsub; ?>"><?php echo $resultsub['subcategoria'];?>
-							<span class="icon">&nbsp;</span></a>	
+							<span class="icon">&nbsp;</span><?php if($qtd_sub_eventos != '0'){?> (<?php echo $qtd_sub_eventos;?>)<?php }?></a>	
                             <?php $sqlantsub = mysql_query("select * from tb_antsubcategoria where id_categoria = '$idC' and id_subcategoria = '$idsub' order by antsubcategoria");
 							if(!empty($sqlantsub)){
 							?>
@@ -194,11 +206,17 @@
             <div class="topo_menu"> 
             </div>
             <div class="bg_conteudo_menu"> 
-            dsadasdasd
-            sadasd
-            asdasdasd
-            dsadasd
-            dasdasdasd dsadasdasd sadasd asdasdasd dsadasd dasdasdasd zxfzfsfsdfsdfsd fsdfsdf fsdfsdfsd fsdfsdfsdf fsdfsdfsdf fsdfsdf zxfzfsfsdfsdfsd fsdfsdf fsdfsdfsd fsdfsdfsdf fsdfsdfsdf fsdfsdf zxfzfsfsdfsdfsd fsdfsdf fsdfsdfsd fsdfsdfsdf fsdfsdfsdf fsdfsdf 
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            Dados Navegação !
+            
             </div>
             <!-- fim menu conteudo -->
         </div>
+        <br /> 
